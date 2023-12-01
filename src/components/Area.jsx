@@ -58,6 +58,7 @@ const Area = () => {
         }>
       </canvas>
       <button
+        style={{ display: points.length > 0 ? "block" : "none" }}
         onClick={() => {
           setPoints([]);
         }}
