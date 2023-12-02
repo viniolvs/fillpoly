@@ -1,7 +1,7 @@
 export default class Poly {
-    constructor() {
-        this.name = ""
-        this.points = []
-        this.edgeColor = "#000000"
-    }
+  constructor(name, points, color) {
+    this.name = name
+    this.points = points
+    this.edgeColor = color
+  }
 }
