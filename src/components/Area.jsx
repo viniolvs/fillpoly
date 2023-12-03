@@ -230,8 +230,8 @@ const Area = () => {
     <div id="wrapper">
       <canvas id="canvas" ref={canvas}
         style={{
-          width: 1000,
-          height: 800,
+          width: 1250,
+          height: 900,
           border: "2px solid black",
           borderLeftWidth: 2,
         }}
