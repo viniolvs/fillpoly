@@ -42,7 +42,7 @@ const Area = () => {
     ctx.lineTo(poly.points[2].x, poly.points[2].y);
     ctx.closePath();
     ctx.strokeStyle = poly.edgeColor;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
     ctx.stroke();
   };
 
@@ -95,6 +95,9 @@ const Area = () => {
         swaped = true
       }
 
+      interval[0] = Math.round(interval[0])
+      interval[1] = Math.round(interval[1])
+
       let color0 = {
         R: v0color.R + edges[0].rateR * i,
         G: v0color.G + edges[0].rateG * i,
@@ -134,6 +137,8 @@ const Area = () => {
         interval[1] = aux
         swaped = true
       }
+      interval[0] = Math.round(interval[0])
+      interval[1] = Math.round(interval[1])
 
       let color1 = {
         R: v1color.R + edges[1].rateR * i,
@@ -169,7 +174,7 @@ const Area = () => {
     ctx.strokeStyle = color
 
     ctx.fillStyle = color
-    ctx.fillRect(x, y, 2, 2)
+    ctx.fillRect(x, y, 1, 1)
   }
 
   function hexToRgb(hex) {
