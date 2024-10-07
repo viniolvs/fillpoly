@@ -4,6 +4,7 @@ import Point from "../models/Point";
 import Poly from "../models/Poly";
 import "./Area.css";
 import PolyEditor from "./PolyEditor";
+import PolyEditorModal from "./PolyEditorModal";
 
 const Area = () => {
   const [isDrawing, setIsDrawing] = useState(false);
@@ -11,6 +12,9 @@ const Area = () => {
   const [polys, setPolys] = useState([]);
   const [color, setColor] = useState("#000000");
   const [count, setCount] = useState(0);
+  const [selectedPoly, setSelectedPoly] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editDeleteBtns, setEditDeleteBtns] = useState({ x: 0, y: 0, visible: false });
 
   const canvas = useRef();
   let ctx = null;
@@ -30,6 +34,16 @@ const Area = () => {
       });
     }
   }, [points, polys, color, count]);
+
+  const openModal = (poly) => {
+    setSelectedPoly(poly);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPoly(null);
+  };
 
   /**
    * @param {Poly} poly
@@ -114,36 +128,117 @@ const Area = () => {
     }
   }
 
+  const isPointInPoly = (poly, x, y) => {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i].x, yi = poly[i].y;
+      const xj = poly[j].x, yj = poly[j].y;
+
+      const intersect = ((yi > y) !== (yj > y)) &&
+        (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+
   return (
     <div id="wrapper">
-      <canvas id="canvas" ref={canvas}
-        style={{
-          width: 1250,
-          height: 900,
-          border: "2px solid black",
-          borderLeftWidth: 2,
-        }}
-        onClick={(e) =>
-          setPoints((prevPoints) => {
-            console.log(isDrawing);
-            if (isDrawing) {
+      <div id="canvasWrapper">
+        <canvas id="canvas" ref={canvas}
+          style={{
+            width: 1250,
+            height: 900,
+            border: "2px solid black",
+            borderLeftWidth: 2,
+          }}
+          onClick={(e) => {
+            if (isDrawing) return setPoints((prevPoints) => {
               return [...prevPoints, new Point(e.clientX, e.clientY, "#000000")];
+            });
+            for (let i = polys.length - 1; i >= 0; i--) {
+              if (isPointInPoly(polys[i].points, e.clientX, e.clientY)) {
+                setSelectedPoly(polys[i]);
+                setEditDeleteBtns({ x: e.clientX, y: e.clientY, visible: true });
+                return;
+              }
             }
-          })
-        }>
-      </canvas>
-      <div id="list">
+          }}>
+        </canvas>
 
+        {!isDrawing && editDeleteBtns.visible &&
+          <div id="editDeleteBtns" style={{
+            position: "absolute",
+            left: `${editDeleteBtns.x}px`,
+            top: `${editDeleteBtns.y}px`,
+            display: "flex",
+            flexDirection: "row"
+          }}
+          >
+            <button onClick={() => {
+              setEditDeleteBtns({ ...editDeleteBtns, visible: false });
+              setIsModalOpen(true);
+            }}
+            >
+              Edit
+            </button>
+            <button className="clear" onClick={() => {
+              setEditDeleteBtns({ ...editDeleteBtns, visible: false });
+              handleDelete(selectedPoly.name);
+            }}
+            >
+              Delete
+            </button>
+          </div>
+        }
+        <PolyEditorModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          poly={selectedPoly}
+          handleColorChange={handleColorChange}
+          handleDelete={handleDelete}
+        />
+      </div>
+
+      <div id="list">
         <h3 style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
           Fill Polys
         </h3>
 
-        <PolyEditor polys={polys} handleDelete={handleDelete} handleColorChange={handleColorChange} />
+        <PolyEditor
+          polys={polys}
+          handleDelete={handleDelete}
+          handleColorChange={handleColorChange}
+          openModal={openModal}
+          closeModal={closeModal}
+        />
 
         <div style={{
           display: "flex",
           flexDirection: "column",
         }}>
+          <div id="instructions">
+            <span id="pointsCount" style={{
+              display: "block",
+              color: "green",
+              fontSize: "14px",
+              flexGrow: 1,
+              width: "100%",
+              marginBottom: "10px"
+            }}>
+              {points.length} points selected
+            </span>
+            {isDrawing && points.length < 3 &&
+              <span id="warning" style={{
+                display: "block",
+                color: "red",
+                fontSize: "12px",
+                flexGrow: 1,
+                width: "100%",
+                marginBottom: "10px"
+              }}>
+                You must select at least 3 points to draw a polygon.
+              </span>}
+          </div>
           <div id="controls">
             <button id="finishDrawing"
               className={points.length >= 3 ? "addPoly" : "inactive"}
@@ -153,10 +248,9 @@ const Area = () => {
                   const poly = new Poly(`Poly ${count}`, points.slice(), "#ffff00");
                   setCount((prevCount) => prevCount + 1);
                   setPolys((prevPolys) => [...prevPolys, poly]);
-                  setPoints([])
-                } else {
-                  alert("You must select at least 3 points to draw a polygon")
-                }
+                  setPoints([]);
+                } else alert("You must select at least 3 points to draw a polygon");
+
               }}
             >
               Draw
@@ -172,15 +266,6 @@ const Area = () => {
               {isDrawing ? "Cancel" : "Add Polygons"}
             </button>
           </div>
-          <span id="warning" style={{
-            display: points.length >= 3 ? "none" : "block",
-            color: "red",
-            fontSize: "12px",
-            flexGrow: 1,
-            width: "100%"
-          }}>
-            {isDrawing && points.length <= 3 ? "You must select at least 3 points to draw a polygon" : ""}
-          </span>
         </div>
 
         <button id="clear" className="clear"
