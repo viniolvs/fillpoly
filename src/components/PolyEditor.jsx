@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import Modal from 'react-modal';
-
-// Configure o Modal para acessar a tela de leitura
-Modal.setAppElement('#root');
+import "./Area.css";
+import PolyEditorModal from './PolyEditorModal'; // Import the modal component
 
 const PolyEditor = ({ polys, handleColorChange, handleDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,36 +27,19 @@ const PolyEditor = ({ polys, handleColorChange, handleDelete }) => {
               Edit
             </button>
 
-            <button className="delete" onClick={() => handleDelete(poly.name)} style={{ background: "red", color: "white" }}>
+            <button className="clear" onClick={() => handleDelete(poly.name)}>
               Delete
             </button>
           </div>
         ))}
       </div>
 
-      {selectedPoly && (
-        <Modal isOpen={isModalOpen} onRequestClose={closeModal}>
-          <h3>Editing {selectedPoly.name}</h3>
-          <span> Edge Color: </span>
-          <input
-            id="colorEdge"
-            value={selectedPoly.edgeColor}
-            type="color"
-            onChange={(e) => handleColorChange(selectedPoly.name, "edge", e.target.value)}
-          />
-          {selectedPoly.points.map((point, index) => (
-            <div key={index} style={{ marginBottom: "10px" }}>
-              <label>Point {index}: </label>
-              <input
-                value={point.color}
-                type="color"
-                onChange={(e) => handleColorChange(selectedPoly.name, `V${index}`, e.target.value)}
-              />
-            </div>
-          ))}
-          <button onClick={closeModal}>Close</button>
-        </Modal>
-      )}
+      <PolyEditorModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        poly={selectedPoly}
+        handleColorChange={handleColorChange}
+      />
     </div>
   );
 };
