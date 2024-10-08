@@ -229,7 +229,7 @@ const Area = () => {
           </div>
         </div>
 
-        <button id="clear" className="clear"
+        {polys.length > 0 && <button id="clear" className="clear"
           style={{ display: "block" }}
           onClick={() => {
             setPolys([]);
@@ -238,7 +238,7 @@ const Area = () => {
           }}
         >
           Clear
-        </button>
+        </button>}
       </div>
     </div>
   );
