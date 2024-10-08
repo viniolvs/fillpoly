@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import "./Area.css";
 import PolyEditorModal from './PolyEditorModal'; // Import the modal component
 
-const PolyEditor = ({ polys, handleDelete }) => {
+const PolyEditor = ({ polys, handleDelete, updatePoly }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPoly, setSelectedPoly] = useState(null);
 
@@ -38,6 +38,7 @@ const PolyEditor = ({ polys, handleDelete }) => {
         isOpen={isModalOpen}
         onClose={closeModal}
         poly={selectedPoly}
+        updatePoly={updatePoly}
       />
     </div>
   );

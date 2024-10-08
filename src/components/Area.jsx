@@ -169,8 +169,7 @@ const Area = () => {
         <PolyEditor
           polys={polys}
           handleDelete={handleDelete}
-          openModal={openModal}
-          closeModal={closeModal}
+          updatePoly={updatePoly}
         />
 
         <div style={{
