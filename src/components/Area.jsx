@@ -10,7 +10,6 @@ const Area = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [points, setPoints] = useState([]);
   const [polys, setPolys] = useState([]);
-  const [color, setColor] = useState("#000000");
   const [count, setCount] = useState(0);
   const [selectedPoly, setSelectedPoly] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +32,7 @@ const Area = () => {
         drawEdges(poly);
       });
     }
-  }, [points, polys, color, count]);
+  }, [points, polys, count, isModalOpen]);
 
   const openModal = (poly) => {
     setSelectedPoly(poly);
@@ -43,6 +42,12 @@ const Area = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedPoly(null);
+  };
+
+  const updatePoly = (updatedPoly) => {
+    setPolys((prevPolys) =>
+      prevPolys.map((poly) => (poly.name === updatedPoly.name ? updatedPoly : poly))
+    );
   };
 
   /**
@@ -85,48 +90,6 @@ const Area = () => {
     setPolys((prevPolys) => prevPolys.filter((p) => p.name !== polyName));
   };
 
-  const handleColorChange = (polyName, type, color) => {
-    if (type === "edge") {
-      setPolys((prevPolys) =>
-        prevPolys.map((poly) => {
-          if (poly.name === polyName) {
-            poly.edgeColor = color;
-          }
-          return poly;
-        })
-      );
-    }
-    else if (type === "V0") {
-      setPolys((prevPolys) =>
-        prevPolys.map((poly) => {
-          if (poly.name === polyName) {
-            poly.points[0].color = color;
-          }
-          return poly;
-        })
-      );
-    }
-    else if (type === "V1") {
-      setPolys((prevPolys) =>
-        prevPolys.map((poly) => {
-          if (poly.name === polyName) {
-            poly.points[1].color = color;
-          }
-          return poly;
-        })
-      );
-    }
-    else if (type === "V2") {
-      setPolys((prevPolys) =>
-        prevPolys.map((poly) => {
-          if (poly.name === polyName) {
-            poly.points[2].color = color;
-          }
-          return poly;
-        })
-      );
-    }
-  }
 
   const isPointInPoly = (poly, x, y) => {
     let inside = false;
@@ -194,8 +157,7 @@ const Area = () => {
           isOpen={isModalOpen}
           onClose={closeModal}
           poly={selectedPoly}
-          handleColorChange={handleColorChange}
-          handleDelete={handleDelete}
+          updatePoly={updatePoly}
         />
       </div>
 
@@ -207,7 +169,6 @@ const Area = () => {
         <PolyEditor
           polys={polys}
           handleDelete={handleDelete}
-          handleColorChange={handleColorChange}
           openModal={openModal}
           closeModal={closeModal}
         />
@@ -217,7 +178,7 @@ const Area = () => {
           flexDirection: "column",
         }}>
           <div id="instructions">
-            <span id="pointsCount" style={{
+            {isDrawing && <span id="pointsCount" style={{
               display: "block",
               color: "green",
               fontSize: "14px",
@@ -226,7 +187,7 @@ const Area = () => {
               marginBottom: "10px"
             }}>
               {points.length} points selected
-            </span>
+            </span>}
             {isDrawing && points.length < 3 &&
               <span id="warning" style={{
                 display: "block",
