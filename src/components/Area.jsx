@@ -163,7 +163,7 @@ const Area = () => {
 
       <div id="list">
         <h3 style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-          Fill Polys
+          FillPoly
         </h3>
 
         <PolyEditor

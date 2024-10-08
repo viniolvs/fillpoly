@@ -27,11 +27,6 @@ const PolyEditorModal = ({ isOpen, onClose, poly, updatePoly }) => {
     setLocalPoly(updatedPoly); // Atualiza o estado local com a nova cor
   };
 
-  const handleClose = () => {
-    onClose();
-    updatePoly(localPoly);
-  };
-
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose}>
       <h3>Editing {localPoly.name}</h3>
@@ -52,8 +47,13 @@ const PolyEditorModal = ({ isOpen, onClose, poly, updatePoly }) => {
           />
         </div>
       ))}
-      <button onClick={handleClose}>Close</button>
-    </Modal>
+      <button onClick={() => {
+        onClose();
+        updatePoly(localPoly);
+      }}>
+        Close
+      </button>
+    </Modal >
   );
 };
 
