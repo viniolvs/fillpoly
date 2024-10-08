@@ -34,8 +34,21 @@ const Area = () => {
     }
   }, [points, polys, count, isModalOpen]);
 
-  const openModal = (poly) => {
-    setSelectedPoly(poly);
+  const handleAreaClick = (e) => {
+    if (isDrawing) return setPoints((prevPoints) => {
+      return [...prevPoints, new Point(e.clientX, e.clientY, "#000000")];
+    });
+    for (let i = polys.length - 1; i >= 0; i--) {
+      if (isPointInPoly(polys[i].points, e.clientX, e.clientY)) {
+        setSelectedPoly(polys[i]);
+        setEditDeleteBtns({ x: e.clientX, y: e.clientY, visible: true });
+        return;
+      }
+    }
+  }
+
+  const openModal = () => {
+    setEditDeleteBtns({ ...editDeleteBtns, visible: false });
     setIsModalOpen(true);
   };
 
@@ -114,18 +127,7 @@ const Area = () => {
             border: "2px solid black",
             borderLeftWidth: 2,
           }}
-          onClick={(e) => {
-            if (isDrawing) return setPoints((prevPoints) => {
-              return [...prevPoints, new Point(e.clientX, e.clientY, "#000000")];
-            });
-            for (let i = polys.length - 1; i >= 0; i--) {
-              if (isPointInPoly(polys[i].points, e.clientX, e.clientY)) {
-                setSelectedPoly(polys[i]);
-                setEditDeleteBtns({ x: e.clientX, y: e.clientY, visible: true });
-                return;
-              }
-            }
-          }}>
+          onClick={handleAreaClick}>
         </canvas>
 
         {!isDrawing && editDeleteBtns.visible &&
@@ -137,10 +139,7 @@ const Area = () => {
             flexDirection: "row"
           }}
           >
-            <button onClick={() => {
-              setEditDeleteBtns({ ...editDeleteBtns, visible: false });
-              setIsModalOpen(true);
-            }}
+            <button onClick={openModal}
             >
               Edit
             </button>

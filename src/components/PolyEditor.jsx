@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import "./Area.css";
-import PolyEditorModal from './PolyEditorModal'; // Import the modal component
+import PolyEditorModal from './PolyEditorModal';
 
 const PolyEditor = ({ polys, handleDelete, updatePoly }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
