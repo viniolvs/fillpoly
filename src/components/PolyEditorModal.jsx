@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import Poly from '../models/Poly';
+import './PolyEditorModal.css'
 
 /**
  * @param {boolean} isOpen
@@ -28,31 +29,49 @@ const PolyEditorModal = ({ isOpen, onClose, poly, updatePoly }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={onClose}>
-      <h3>Editing {localPoly.name}</h3>
-      <span> Edge Color: </span>
-      <input
-        id="colorEdge"
-        value={localPoly.edgeColor}
-        type="color"
-        onChange={(e) => handleColorChange(e.target.value, true)}
-      />
-      {localPoly.points.map((point, index) => (
-        <div key={index} style={{ marginBottom: "10px" }}>
-          <label>Point {index}: </label>
+    <Modal isOpen={isOpen} onRequestClose={onClose}
+      style={{
+        content: {
+          width: 'fit-content',
+          height: 'fit-content',
+          maxWidth: '50%',
+          maxHeight: '90%',
+          margin: 'auto',
+          padding: '30px',
+          overflow: 'auto',
+          backgroundColor: '#f8f8f8',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          borderRadius: '8px'
+        }
+      }}
+    >
+      <div id="modalWrapper">
+        <h3>Editing {localPoly.name}</h3>
+        <div className="colorLabelInput">
+          <label>Edge Color:</label>
           <input
-            value={point.color}
+            value={localPoly.edgeColor}
             type="color"
-            onChange={(e) => handleColorChange(e.target.value, false, index)}
+            onChange={(e) => handleColorChange(e.target.value, true)}
           />
         </div>
-      ))}
-      <button onClick={() => {
-        onClose();
-        updatePoly(localPoly);
-      }}>
-        Close
-      </button>
+        {localPoly.points.map((point, index) => (
+          <div key={index} className="colorLabelInput">
+            <label>Point {index}: </label>
+            <input
+              value={point.color}
+              type="color"
+              onChange={(e) => handleColorChange(e.target.value, false, index)}
+            />
+          </div>
+        ))}
+        <button onClick={() => {
+          onClose();
+          updatePoly(localPoly);
+        }}>
+          Close
+        </button>
+      </div>
     </Modal >
   );
 };
