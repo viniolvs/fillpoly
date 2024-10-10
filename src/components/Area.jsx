@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import Point from "../models/Point";
 import Poly from "../models/Poly";
 import "./Area.css";
-import PolyEditor from "./PolyEditor";
 import PolyEditorModal from "./PolyEditorModal";
 
 const Area = () => {
@@ -84,14 +83,6 @@ const Area = () => {
   const fillPoly = (poly) => {
   };
 
-  function drawPixel(x, y, color) {
-    ctx.lineWidth = 1
-    ctx.strokeStyle = color
-
-    ctx.fillStyle = color
-    ctx.fillRect(x, y, 1, 1)
-  }
-
   function hexToRgb(hex) {
     const R = parseInt(hex.substring(1, 3), 16);
     const G = parseInt(hex.substring(3, 5), 16);
@@ -121,12 +112,6 @@ const Area = () => {
     <div id="wrapper">
       <div id="canvasWrapper">
         <canvas id="canvas" ref={canvas}
-          style={{
-            width: 1250,
-            height: 900,
-            border: "2px solid black",
-            borderLeftWidth: 2,
-          }}
           onClick={handleAreaClick}>
         </canvas>
 
@@ -165,17 +150,21 @@ const Area = () => {
           FillPoly
         </h3>
 
-        <PolyEditor
-          polys={polys}
-          handleDelete={handleDelete}
-          updatePoly={updatePoly}
-        />
-
         <div style={{
           display: "flex",
           flexDirection: "column",
         }}>
           <div id="instructions">
+            {polys.length > 0 && !isDrawing && <span style={{
+              display: "block",
+              fontSize: "14px",
+              flexGrow: 1,
+              width: "100%",
+              marginBottom: "10px"
+            }}>
+              Click in a poly to edit
+            </span>}
+
             {isDrawing && <span id="pointsCount" style={{
               display: "block",
               color: "green",
