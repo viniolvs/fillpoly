@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
-import Poly from '../models/Poly';
 import './PolyEditorModal.css'
 
-/**
- * @param {boolean} isOpen
- * @param {Poly} poly
- */
 const PolyEditorModal = ({ isOpen, onClose, poly, updatePoly }) => {
   const [localPoly, setLocalPoly] = useState(null);
 
@@ -16,16 +11,15 @@ const PolyEditorModal = ({ isOpen, onClose, poly, updatePoly }) => {
 
   if (!localPoly) return null;
 
-  const handleColorChange = (color, isEdge = false, pointIndex = null) => {
+  const handleColorChange = (color, isEdge = false) => {
     const updatedPoly = { ...localPoly };
 
     if (isEdge) {
       updatedPoly.edgeColor = color;
-    } else if (pointIndex !== null) {
-      updatedPoly.points[pointIndex].color = color;
+    } else {
+      updatedPoly.color = color
     }
-
-    setLocalPoly(updatedPoly); // Atualiza o estado local com a nova cor
+    setLocalPoly(updatedPoly);
   };
 
   return (
@@ -55,16 +49,14 @@ const PolyEditorModal = ({ isOpen, onClose, poly, updatePoly }) => {
             onChange={(e) => handleColorChange(e.target.value, true)}
           />
         </div>
-        {localPoly.points.map((point, index) => (
-          <div key={index} className="colorLabelInput">
-            <label>Point {index}: </label>
-            <input
-              value={point.color}
-              type="color"
-              onChange={(e) => handleColorChange(e.target.value, false, index)}
-            />
-          </div>
-        ))}
+        <div className="colorLabelInput">
+          <label>Color:</label>
+          <input
+            value={localPoly.color}
+            type="color"
+            onChange={(e) => handleColorChange(e.target.value)}
+          />
+        </div>
         <button onClick={() => {
           onClose();
           updatePoly(localPoly);

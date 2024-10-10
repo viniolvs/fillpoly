@@ -3,5 +3,6 @@ export default class Poly {
     this.name = name
     this.points = points
     this.edgeColor = color
+    this.color = color
   }
 }

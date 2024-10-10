@@ -35,7 +35,7 @@ const Area = () => {
 
   const handleAreaClick = (e) => {
     if (isDrawing) return setPoints((prevPoints) => {
-      return [...prevPoints, new Point(e.clientX, e.clientY, "#000000")];
+      return [...prevPoints, new Point(e.clientX, e.clientY)];
     });
     for (let i = polys.length - 1; i >= 0; i--) {
       if (isPointInPoly(polys[i].points, e.clientX, e.clientY)) {
