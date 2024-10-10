@@ -42,14 +42,6 @@ const PolyEditorModal = ({ isOpen, onClose, poly, updatePoly }) => {
       <div id="modalWrapper">
         <h3>Editing {localPoly.name}</h3>
         <div className="colorLabelInput">
-          <label>Edge Color:</label>
-          <input
-            value={localPoly.edgeColor}
-            type="color"
-            onChange={(e) => handleColorChange(e.target.value, true)}
-          />
-        </div>
-        <div className="colorLabelInput">
           <label>Color:</label>
           <input
             value={localPoly.color}
@@ -57,11 +49,19 @@ const PolyEditorModal = ({ isOpen, onClose, poly, updatePoly }) => {
             onChange={(e) => handleColorChange(e.target.value)}
           />
         </div>
-        <button onClick={() => {
+        <div className="colorLabelInput">
+          <label>Edge Color:</label>
+          <input
+            value={localPoly.edgeColor}
+            type="color"
+            onChange={(e) => handleColorChange(e.target.value, true)}
+          />
+        </div>
+        <button id="saveBtn" onClick={() => {
           onClose();
           updatePoly(localPoly);
         }}>
-          Close
+          Save
         </button>
       </div>
     </Modal >

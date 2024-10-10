@@ -80,6 +80,11 @@ button {
   color: white;
 }
 
+.addPoly:hover {
+  background-color: #77BB10;
+  color: white;
+}
+
 .inactive {
   background-color: #808080;
   font-size: 16px;
