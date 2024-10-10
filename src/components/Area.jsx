@@ -53,6 +53,7 @@ const Area = () => {
         return;
       }
     }
+    setEditDeleteBtns({ ...editDeleteBtns, visible: false });
   }
 
   const drawPoint = (point) => {
@@ -112,7 +113,6 @@ const Area = () => {
     setPolys((prevPolys) => prevPolys.filter((p) => p.name !== polyName));
   };
 
-
   const isPointInPoly = (poly, x, y) => {
     let inside = false;
     for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -134,25 +134,20 @@ const Area = () => {
         </canvas>
 
         {!isDrawing && editDeleteBtns.visible &&
-          <div id="editDeleteBtns" style={{
-            position: "absolute",
+          <div id="canvasPopup" style={{
             left: `${editDeleteBtns.x}px`,
             top: `${editDeleteBtns.y}px`,
-            display: "flex",
-            flexDirection: "row"
-          }}
-          >
-            <button onClick={openModal}
-            >
-              Edit
-            </button>
-            <button className="clear" onClick={() => {
-              setEditDeleteBtns({ ...editDeleteBtns, visible: false });
-              handleDelete(selectedPoly.name);
-            }}
-            >
-              Delete
-            </button>
+          }}>
+            <span> {selectedPoly.name} </span>
+            <div id="editDeleteBtns">
+              <button onClick={openModal}> Edit </button>
+              <button className="clear" onClick={() => {
+                setEditDeleteBtns({ ...editDeleteBtns, visible: false });
+                handleDelete(selectedPoly.name);
+              }}>
+                Delete
+              </button>
+            </div>
           </div>
         }
         <PolyEditorModal
@@ -163,7 +158,7 @@ const Area = () => {
         />
       </div>
 
-      <div id="list">
+      <div id="interface">
         <h3 style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
           FillPoly
         </h3>
@@ -217,7 +212,6 @@ const Area = () => {
                   setPoints([]);
                   setDrawedPoints([]);
                 } else alert("You must select at least 3 points to draw a polygon");
-
               }}
             >
               Draw

@@ -8,13 +8,15 @@
   border: 2px solid black;
   width: 80vw;
   height: 98vh;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
-#list {
+#interface {
   display: flex;
   flex-direction: column;
   width: 500px;
   margin: 0 auto;
+  padding-left: 10px;
 }
 
 #labels {
@@ -90,6 +92,7 @@ button {
   font-size: 16px;
   color: white;
 }
+
 .inactive:hover {
   cursor: not-allowed;
 }
@@ -108,4 +111,28 @@ button {
 #controls button {
   margin: 0 5px;
   flex-grow: 1;
+}
+
+#canvasPopup {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.3);
+  /* Fundo semitransparente */
+  backdrop-filter: blur(10px);
+  /* Aplica o efeito de blur */
+  -webkit-backdrop-filter: blur(10px);
+  /* Para compatibilidade com Safari */
+  border-radius: 10px;
+  /* Opcional: bordas arredondadas */
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  /* Borda semitransparente */
+  padding: 5px;
+  z-index: 10;
+}
+
+#canvasPopup span {
+  font-size: 16px;
+  font-weight: bold;
 }
