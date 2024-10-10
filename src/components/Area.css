@@ -90,6 +90,9 @@ button {
   font-size: 16px;
   color: white;
 }
+.inactive:hover {
+  cursor: not-allowed;
+}
 
 #instructions {
   font-size: 16px;
