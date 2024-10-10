@@ -13,6 +13,7 @@ const Area = () => {
   const [selectedPoly, setSelectedPoly] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editDeleteBtns, setEditDeleteBtns] = useState({ x: 0, y: 0, visible: false });
+  const [drawedPoints, setDrawedPoints] = useState([]);
 
   const canvas = useRef();
   let ctx = null;
@@ -31,12 +32,20 @@ const Area = () => {
         drawEdges(poly);
       });
     }
-  }, [points, polys, count, isModalOpen]);
+    if (drawedPoints.length > 0) {
+      drawedPoints.forEach((point) => {
+        drawPoint(point)
+      })
+    }
+  }, [points, polys, count, isModalOpen, drawedPoints]);
 
   const handleAreaClick = (e) => {
-    if (isDrawing) return setPoints((prevPoints) => {
-      return [...prevPoints, new Point(e.clientX, e.clientY)];
-    });
+    if (isDrawing) {
+      const point = new Point(e.clientX, e.clientY);
+      setDrawedPoints((prevDrawedPoints) => [...prevDrawedPoints, point]);
+      return setPoints((prevPoints) => [...prevPoints, point]);
+    }
+
     for (let i = polys.length - 1; i >= 0; i--) {
       if (isPointInPoly(polys[i].points, e.clientX, e.clientY)) {
         setSelectedPoly(polys[i]);
@@ -44,6 +53,15 @@ const Area = () => {
         return;
       }
     }
+  }
+
+  const drawPoint = (point) => {
+    const color = "#000000"
+    ctx.lineWidth = 1
+    ctx.strokeStyle = color
+
+    ctx.fillStyle = color
+    ctx.fillRect(point.x, point.y, 4, 4)
   }
 
   const openModal = () => {
@@ -197,6 +215,7 @@ const Area = () => {
                   setCount((prevCount) => prevCount + 1);
                   setPolys((prevPolys) => [...prevPolys, poly]);
                   setPoints([]);
+                  setDrawedPoints([]);
                 } else alert("You must select at least 3 points to draw a polygon");
 
               }}
@@ -206,7 +225,10 @@ const Area = () => {
             <button
               id="addPoly"
               onClick={() => {
-                if (isDrawing) setPoints([]);
+                if (isDrawing) {
+                  setPoints([]);
+                  setDrawedPoints([]);
+                }
                 setIsDrawing(!isDrawing)
               }}
               className={isDrawing ? "clear" : "addPoly"}
