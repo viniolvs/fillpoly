@@ -1,0 +1,142 @@
+#wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#canvas {
+  border: 2px solid black;
+  width: 80vw;
+  height: 98vh;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+#interface {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  margin: 0 auto;
+  padding-left: 10px;
+}
+
+#labels {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+#labels span {
+  font-weight: bold;
+}
+
+#polys {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+#polys div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+span {
+  text-align: center;
+  display: block;
+  width: 70px;
+}
+
+input {
+  width: 70px;
+}
+
+button {
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  padding: 5px 10px;
+  margin: 4px 2px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete {
+  color: red;
+}
+
+.clear {
+  background-color: #E37575;
+  color: white;
+}
+
+.clear:hover {
+  background-color: #D12828;
+}
+
+.addPoly {
+  background-color: #77DD77;
+  color: white;
+}
+
+.addPoly:hover {
+  background-color: #77BB10;
+  color: white;
+}
+
+.inactive {
+  background-color: #808080;
+  font-size: 16px;
+  color: white;
+}
+
+.inactive:hover {
+  cursor: not-allowed;
+}
+
+#instructions {
+  font-size: 16px;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+#controls {
+  display: flex;
+  justify-content: center;
+}
+
+#controls button {
+  margin: 0 5px;
+  flex-grow: 1;
+}
+
+#canvasPopup {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.3);
+  /* Fundo semitransparente */
+  backdrop-filter: blur(10px);
+  /* Aplica o efeito de blur */
+  -webkit-backdrop-filter: blur(10px);
+  /* Para compatibilidade com Safari */
+  border-radius: 10px;
+  /* Opcional: bordas arredondadas */
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  /* Borda semitransparente */
+  padding: 5px;
+  z-index: 10;
+}
+
+#canvasPopup span {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#defaultColors {
+  padding: 2vw;
+}
