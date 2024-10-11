@@ -14,6 +14,8 @@ const Area = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editDeleteBtns, setEditDeleteBtns] = useState({ x: 0, y: 0, visible: false });
   const [drawedPoints, setDrawedPoints] = useState([]);
+  const [defaultEdgeColor, setDefaultEdgeColor] = useState("#ffff00");
+  const [defaultFillColor, setDefaultFillColor] = useState("#ffff00");
 
   const canvas = useRef();
   let ctx = null;
@@ -23,13 +25,16 @@ const Area = () => {
     const cnvs = canvas.current;
     cnvs.width = cnvs.clientWidth;
     cnvs.height = cnvs.clientHeight;
+    const cnvsYmin = cnvs.getBoundingClientRect().top;
+    const cnvsYmax = cnvs.getBoundingClientRect().bottom;
+
     // get context of the canvas
     ctx = cnvs.getContext("2d");
 
     if (polys.length > 0) {
       polys.forEach((poly) => {
-        fillPoly(poly);
         drawEdges(poly);
+        fillPoly(poly, cnvsYmin, cnvsYmax);
       });
     }
     if (drawedPoints.length > 0) {
@@ -81,9 +86,16 @@ const Area = () => {
     );
   };
 
-  /**
-   * @param {Poly} poly
-   */
+  const drawLine = (p1, p2, color) => {
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.closePath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+    ctx.stroke();
+  };
+
   const drawEdges = (poly) => {
     ctx.beginPath();
     ctx.moveTo(poly.points[0].x, poly.points[0].y);
@@ -92,22 +104,58 @@ const Area = () => {
     }
     ctx.closePath();
     ctx.strokeStyle = poly.edgeColor;
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 10;
     ctx.stroke();
   };
 
-  /**
-   * @param {Poly} poly
-   */
-  const fillPoly = (poly) => {
-  };
+  const fillPoly = (poly, yMin, yMax) => {
+    yMin = Math.floor(yMin); yMax = Math.floor(yMax);
+    const scanlinesLength = yMax - yMin;
+    const scanlines = [];
+    for (let i = 0; i < scanlinesLength; i++) {
+      scanlines.push([]);
+    }
+    for (let i = 0; i < poly.points.length; i++) {
+      const p1 = poly.points[i];
+      const nextPointIndex = i + 1 < poly.points.length ? i + 1 : 0;
+      const p2 = poly.points[nextPointIndex];
 
-  function hexToRgb(hex) {
-    const R = parseInt(hex.substring(1, 3), 16);
-    const G = parseInt(hex.substring(3, 5), 16);
-    const B = parseInt(hex.substring(5, 7), 16);
-    return { R, G, B };
-  }
+      // se aresta for horizontal, não processa
+      const mod = p2.y - p1.y >= 0 ? p2.y - p1.y : p1.y - p2.y;
+      const isHorizontal = mod <= 0.1;
+      if (isHorizontal) continue;
+
+      let edgeYmin, edgeYmax, currentX;
+      if (p1.y <= p2.y) {
+        edgeYmin = p1.y
+        edgeYmax = p2.y
+        currentX = p1.x;
+      } else {
+        edgeYmin = p2.y
+        edgeYmax = p1.y
+        currentX = p2.x;
+      }
+
+      const m = (p2.y - p1.y) / (p2.x - p1.x);
+      for (let j = edgeYmin; j < edgeYmax; j++) {
+        const scanline = j - yMin;
+        const intersection = new Point(currentX + (1.0 / m), j);
+
+        scanlines[scanline].push(intersection);
+        currentX = intersection.x;
+      }
+    }
+
+    for (let scanline of scanlines) {
+      if (scanline.length < 2) continue;
+      scanline = scanline.sort((a, b) => a.x - b.x);
+      for (let i = 0; i < scanline.length - 1; i += 2) {
+        const p1 = scanline[i];
+        const p2 = scanline[i + 1];
+        drawLine(p1, p2, poly.color);
+      }
+    }
+  };
 
   const handleDelete = (polyName) => {
     setPolys((prevPolys) => prevPolys.filter((p) => p.name !== polyName));
@@ -206,7 +254,7 @@ const Area = () => {
               style={{ display: isDrawing ? "block" : "none" }}
               onClick={() => {
                 if (points.length >= 3) {
-                  const poly = new Poly(`Poly ${count}`, points.slice(), "#ffff00");
+                  const poly = new Poly(`Poly ${count}`, points.slice(), defaultFillColor, defaultEdgeColor);
                   setCount((prevCount) => prevCount + 1);
                   setPolys((prevPolys) => [...prevPolys, poly]);
                   setPoints([]);
@@ -242,8 +290,29 @@ const Area = () => {
         >
           Clear
         </button>}
+
+        {isDrawing &&
+          <div id="defaultColors">
+            <div className="colorLabelInput">
+              <label>Fill Color:</label>
+              <input
+                value={defaultFillColor}
+                type="color"
+                onChange={(e) => setDefaultFillColor(e.target.value)}
+              />
+            </div>
+            <div className="colorLabelInput">
+              <label>Edge Color:</label>
+              <input
+                value={defaultEdgeColor}
+                type="color"
+                onChange={(e) => setDefaultEdgeColor(e.target.value)}
+              />
+            </div>
+          </div>
+        }
       </div>
-    </div>
+    </div >
   );
 };
 

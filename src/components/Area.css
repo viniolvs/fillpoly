@@ -136,3 +136,7 @@ button {
   font-size: 16px;
   font-weight: bold;
 }
+
+#defaultColors {
+  padding: 2vw;
+}
